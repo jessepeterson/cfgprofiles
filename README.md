@@ -2,6 +2,8 @@
 
 Package `cfgprofiles` provides structs and helpers for working with Apple Configuration Profiles in go.
 
+[Documentation at godoc.org](https://godoc.org/github.com/jessepeterson/cfgprofiles)
+
 Example unmarshaling (parsing):
 
 ```go
