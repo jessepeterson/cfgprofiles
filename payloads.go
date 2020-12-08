@@ -40,11 +40,11 @@ func (p *payloadWrapper) MarshalPlist() (interface{}, error) {
 func newPayloadForType(t string) interface{} {
 	switch t {
 	case "com.apple.security.pkcs1":
-		return &ComAppleSecurityPkcs1Payload{}
+		return &CertificatePKCS1Payload{}
 	case "com.apple.mdm":
-		return &ComAppleMDMPayload{}
+		return &MDMPayload{}
 	case "com.apple.security.scep":
-		return &ComAppleSecuritySCEPPayload{}
+		return &SCEPPayload{}
 	default:
 		return &Payload{}
 	}
@@ -82,34 +82,34 @@ func (p *Profile) UnknownPayloads() (plds []*Payload) {
 	return
 }
 
-// ComAppleSecurityPkcs1Payload represents the "com.apple.security.pkcs1" PayloadType.
+// CertificatePKCS1Payload represents the "com.apple.security.pkcs1" PayloadType.
 // See https://developer.apple.com/documentation/devicemanagement/certificatepkcs1
-type ComAppleSecurityPkcs1Payload struct {
+type CertificatePKCS1Payload struct {
 	Payload
 	PayloadCertificateFileName string `plist:",omitempty"`
 	PayloadContent             []byte
 }
 
-// NewComAppleSecurityPkcs1Payload creates a new payload with identifier i
-func NewComAppleSecurityPkcs1Payload(i string) *ComAppleSecurityPkcs1Payload {
-	return &ComAppleSecurityPkcs1Payload{
+// NewCertificatePKCS1Payload creates a new payload with identifier i
+func NewCertificatePKCS1Payload(i string) *CertificatePKCS1Payload {
+	return &CertificatePKCS1Payload{
 		Payload: *NewPayload("com.apple.security.pkcs1", i),
 	}
 }
 
-// ComAppleSecurityPkcs1Payloads returns a slice of all payloads of that type
-func (p *Profile) ComAppleSecurityPkcs1Payloads() (plds []*ComAppleSecurityPkcs1Payload) {
+// CertificatePKCS1Payloads returns a slice of all payloads of that type
+func (p *Profile) CertificatePKCS1Payloads() (plds []*CertificatePKCS1Payload) {
 	for _, pc := range p.PayloadContent {
-		if pld, ok := pc.Payload.(*ComAppleSecurityPkcs1Payload); ok {
+		if pld, ok := pc.Payload.(*CertificatePKCS1Payload); ok {
 			plds = append(plds, pld)
 		}
 	}
 	return
 }
 
-// ComAppleSecuritySCEPPayload represents the "com.apple.security.scep" PayloadType.
+// SCEPPayload represents the "com.apple.security.scep" PayloadType.
 // See https://developer.apple.com/documentation/devicemanagement/scep
-type ComAppleSecuritySCEPPayload struct {
+type SCEPPayload struct {
 	Payload
 	URL                string
 	Name               string       `plist:",omitempty"`
@@ -126,26 +126,26 @@ type ComAppleSecuritySCEPPayload struct {
 	// TODO: SubjectAltName *SubjectAltName `plist:",omitempty"`
 }
 
-// NewComAppleSecuritySCEPPayload creates a new payload with identifier i
-func NewComAppleSecuritySCEPPayload(i string) *ComAppleSecuritySCEPPayload {
-	return &ComAppleSecuritySCEPPayload{
+// NewSCEPPayload creates a new payload with identifier i
+func NewSCEPPayload(i string) *SCEPPayload {
+	return &SCEPPayload{
 		Payload: *NewPayload("com.apple.security.scep", i),
 	}
 }
 
-// ComAppleSecuritySCEPPayloads returns a slice of all payloads of that type
-func (p *Profile) ComAppleSecuritySCEPPayloads() (plds []*ComAppleSecuritySCEPPayload) {
+// SCEPPayloads returns a slice of all payloads of that type
+func (p *Profile) SCEPPayloads() (plds []*SCEPPayload) {
 	for _, pc := range p.PayloadContent {
-		if pld, ok := pc.Payload.(*ComAppleSecuritySCEPPayload); ok {
+		if pld, ok := pc.Payload.(*SCEPPayload); ok {
 			plds = append(plds, pld)
 		}
 	}
 	return
 }
 
-// ComAppleMDMPayload represents the "com.apple.mdm" PayloadType.
+// MDMPayload represents the "com.apple.mdm" PayloadType.
 // See https://developer.apple.com/documentation/devicemanagement/mdm
-type ComAppleMDMPayload struct {
+type MDMPayload struct {
 	Payload
 	IdentityCertificateUUID           string
 	Topic                             string
@@ -161,17 +161,17 @@ type ComAppleMDMPayload struct {
 	PinningRevocationCheckRequired    bool     `plist:",omitempty"`
 }
 
-// NewComAppleMDMPayload creates a new payload with identifier i
-func NewComAppleMDMPayload(i string) *ComAppleMDMPayload {
-	return &ComAppleMDMPayload{
+// NewMDMPayload creates a new payload with identifier i
+func NewMDMPayload(i string) *MDMPayload {
+	return &MDMPayload{
 		Payload: *NewPayload("com.apple.mdm", i),
 	}
 }
 
-// ComAppleMDMPayloads returns a slice of all payloads of that type
-func (p *Profile) ComAppleMDMPayloads() (plds []*ComAppleMDMPayload) {
+// MDMPayloads returns a slice of all payloads of that type
+func (p *Profile) MDMPayloads() (plds []*MDMPayload) {
 	for _, pc := range p.PayloadContent {
-		if pld, ok := pc.Payload.(*ComAppleMDMPayload); ok {
+		if pld, ok := pc.Payload.(*MDMPayload); ok {
 			plds = append(plds, pld)
 		}
 	}

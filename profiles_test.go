@@ -40,7 +40,7 @@ func PKCS1CertProfileTest(p *Profile, t *testing.T) {
 		t.Fatal("payload count is not 1")
 	}
 
-	pls := p.ComAppleSecurityPkcs1Payloads()
+	pls := p.CertificatePKCS1Payloads()
 	if len(pls) != 1 {
 		t.Fatal("payload count is not 1")
 	}
@@ -74,7 +74,7 @@ func TestProfileCreation(t *testing.T) {
 	p.PayloadScope = "User"
 	p.PayloadUUID = "2689BE77-60CE-4588-83F7-7CDC494DB1AA" // override new UUID for test
 
-	pl := NewComAppleSecurityPkcs1Payload("com.github.erikberglund.ProfileCreator.2689BE77-60CE-4588-83F7-7CDC494DB1AA.com.apple.security.pkcs1.8BF53919-B83E-4280-A40C-0407FB6AF341")
+	pl := NewCertificatePKCS1Payload("com.github.erikberglund.ProfileCreator.2689BE77-60CE-4588-83F7-7CDC494DB1AA.com.apple.security.pkcs1.8BF53919-B83E-4280-A40C-0407FB6AF341")
 	pl.PayloadDisplayName = "Certificate"
 	pl.PayloadUUID = "8BF53919-B83E-4280-A40C-0407FB6AF341" // override new UUID for test
 	cert := GetCertData(t)
