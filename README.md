@@ -18,7 +18,7 @@ Example marshaling:
 
 ```go
 p := cfgprofiles.NewProfile("com.my.profile.id")
-pld := cfgprofiles.NewComAppleSecurityPkcs1Payload("com.my.profile.id.payload")
+pld := cfgprofiles.NewCertificatePKCS1Payload("com.my.profile.id.payload")
 cert, _ := x509.ParseCertificate(certBytes)
 pld.PayloadContent = cert.Raw
 p.AddPayload(pl)
