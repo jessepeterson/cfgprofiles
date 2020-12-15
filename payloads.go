@@ -107,10 +107,9 @@ func (p *Profile) CertificatePKCS1Payloads() (plds []*CertificatePKCS1Payload) {
 	return
 }
 
-// SCEPPayload represents the "com.apple.security.scep" PayloadType.
-// See https://developer.apple.com/documentation/devicemanagement/scep
-type SCEPPayload struct {
-	Payload
+// SCEPPayloadContent represents the PayloadContent of the SCEPPayload
+// See https://developer.apple.com/documentation/devicemanagement/scep/payloadcontent
+type SCEPPayloadContent struct {
 	URL                string
 	Name               string       `plist:",omitempty"`
 	Subject            [][][]string `plist:",omitempty"`
@@ -124,6 +123,13 @@ type SCEPPayload struct {
 	AllowAllAppsAccess bool         `plist:",omitempty"`
 	KeyIsExtractable   *bool        `plist:",omitempty"` // default true
 	// TODO: SubjectAltName *SubjectAltName `plist:",omitempty"`
+}
+
+// SCEPPayload represents the "com.apple.security.scep" PayloadType.
+// See https://developer.apple.com/documentation/devicemanagement/scep
+type SCEPPayload struct {
+	Payload
+	PayloadContent SCEPPayloadContent
 }
 
 // NewSCEPPayload creates a new payload with identifier i
