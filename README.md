@@ -7,7 +7,7 @@ Package `cfgprofiles` provides structs and helpers for working with Apple Config
 Example unmarshaling (parsing):
 
 ```go
-pBytes, _ := ioutil.ReadFile("profile.mobileconfig")
+plBytes, _ := ioutil.ReadFile("profile.mobileconfig")
 p := &cfgprofiles.Profile{}
 _ := plist.Unmarshal(plBytes, p)
 fmt.Println(p.PayloadIdentifier)
