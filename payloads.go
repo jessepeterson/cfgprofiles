@@ -72,6 +72,22 @@ func NewPayload(t, i string) *Payload {
 	}
 }
 
+// CommonPayload returns the common Payload struct of a profile payload i or returns nil.
+func CommonPayload(i interface{}) *Payload {
+	switch pl := i.(type) {
+	case *CertificatePKCS1Payload:
+		return &pl.Payload
+	case *SCEPPayload:
+		return &pl.Payload
+	case *MDMPayload:
+		return &pl.Payload
+	case *Payload:
+		return pl
+	default:
+		return nil
+	}
+}
+
 // UnknownPayloads returns a slice of profile payloads not matched to specific payload structs.
 func (p *Profile) UnknownPayloads() (plds []*Payload) {
 	for _, pc := range p.PayloadContent {
