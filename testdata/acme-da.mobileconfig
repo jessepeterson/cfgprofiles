@@ -31,16 +31,6 @@
 				<string>cbdc6238-feec-4171-8784-98e576bbb814</string>
 				<key>PayloadVersion</key>
 				<integer>1</integer>
-				<key>SubjectAltName</key>
-				<dict>
-					<key>dNSName</key>
-					<string>site.example.com</string>
-					<key>rfc822Name</key>
-					<array>
-						<string>alice@example.com</string>
-						<string>bob@example.com</string>
-					</array>
-				</dict>
 				<key>Subject</key>
 				<array>
 					<array>
@@ -56,6 +46,16 @@
 						</array>
 					</array>
 				</array>
+				<key>SubjectAltName</key>
+				<dict>
+					<key>dNSName</key>
+					<string>site.example.com</string>
+					<key>rfc822Name</key>
+					<array>
+						<string>alice@example.com</string>
+						<string>bob@example.com</string>
+					</array>
+				</dict>
 			</dict>
 		</array>
 		<key>PayloadDisplayName</key>

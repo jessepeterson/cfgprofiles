@@ -2,6 +2,7 @@ package cfgprofiles
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"strings"
 
@@ -233,7 +234,20 @@ func (m *multiString) UnmarshalPlist(f func(interface{}) error) error {
 	}
 
 	// fallback error; this is the most information we can provide
-	return errors.New("cannot unmarshal value into cfgprofiles.multiString")
+	return fmt.Errorf("cannot unmarshal value into %T: %w", *m, err)
+}
+
+// MarshalPlist marshals the contents of a [multiString], which can
+// be either a single value or slice of strings.
+func (m *multiString) MarshalPlist() (interface{}, error) {
+	switch n := *m; len(n) {
+	case 0:
+		return nil, fmt.Errorf("cannot marshal empty %T", n)
+	case 1:
+		return n[0], nil
+	default:
+		return append([]string{}, n...), nil
+	}
 }
 
 // ACMECertificatePayload represents the "com.apple.security.acme" PayloadType.

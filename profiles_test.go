@@ -172,6 +172,17 @@ func TestACMECertificateProfileAndPayloadDecode(t *testing.T) {
 	if !reflect.DeepEqual(expected, p) {
 		t.Errorf("have %#+v, want %#+v", p, expected)
 	}
+
+	b, err := plist.MarshalIndent(expected, "\t")
+	fatalIf(t, err)
+
+	new := &Profile{}
+	err = plist.Unmarshal(b, new)
+	fatalIf(t, err)
+
+	if !reflect.DeepEqual(expected, new) {
+		t.Errorf("have %#+v, want %#+v", p, expected)
+	}
 }
 
 func fatalIf(t *testing.T, err error) {
