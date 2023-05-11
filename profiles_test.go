@@ -5,6 +5,7 @@ import (
 	"encoding/pem"
 	"io/ioutil"
 	"path/filepath"
+	"reflect"
 	"testing"
 
 	"github.com/groob/plist"
@@ -109,4 +110,68 @@ func TestProfileAndPayloadDecode(t *testing.T) {
 	}
 
 	t.Run("plist decode", func(t *testing.T) { PKCS1CertProfileByteTest(plBytes, t) })
+}
+
+func TestACMECertificateProfileAndPayloadDecode(t *testing.T) {
+	plBytes, err := ioutil.ReadFile(filepath.Join("testdata", "acme-da.mobileconfig"))
+	fatalIf(t, err)
+
+	p := &Profile{}
+	err = plist.Unmarshal(plBytes, p)
+	fatalIf(t, err)
+
+	expected := &Profile{
+		Payload: Payload{
+			PayloadUUID:        "734EEACF-1334-4B65-8E8C-6AC07E9B79E5",
+			PayloadIdentifier:  "com.smallstep.acmedademo",
+			PayloadType:        "Configuration",
+			PayloadDisplayName: "ACME DA Certificate",
+			PayloadVersion:     1,
+		},
+		PayloadContent: []payloadWrapper{
+			{
+				Payload: &ACMECertificatePayload{
+					Payload: Payload{
+						PayloadIdentifier: "com.apple.security.acme.cbdc6238-feec-4171-8784-98e576bbb814",
+						PayloadUUID:       "cbdc6238-feec-4171-8784-98e576bbb814",
+						PayloadType:       "com.apple.security.acme",
+						PayloadVersion:    1,
+					},
+					Attest:           true,
+					ClientIdentifier: "2678F47F-7A0B-4E7E-BEBC-29C1DCAF28C6",
+					DirectoryURL:     "https://127.0.0.1:8443/acme/appleacmesim/directory",
+					ExtendedKeyUsage: []string{
+						"1.3.6.1.5.5.7.3.2",
+					},
+					HardwareBound:    true,
+					KeyIsExtractable: nil,
+					KeyType:          "ECSECPrimeRandom",
+					KeySize:          384,
+					Subject: [][][]string{
+						{
+							[]string{
+								"C", "NL",
+							},
+						},
+						{
+							[]string{
+								"O", "Smallstep ACME DA Demo",
+							},
+						},
+					},
+					UsageFlags: 0,
+				},
+			},
+		},
+	}
+
+	if !reflect.DeepEqual(expected, p) {
+		t.Errorf("have %#+v, want %#+v", p, expected)
+	}
+}
+
+func fatalIf(t *testing.T, err error) {
+	if err != nil {
+		t.Fatal(err)
+	}
 }

@@ -45,6 +45,8 @@ func newPayloadForType(t string) interface{} {
 		return &MDMPayload{}
 	case "com.apple.security.scep":
 		return &SCEPPayload{}
+	case "com.apple.security.acme":
+		return &ACMECertificatePayload{}
 	default:
 		return &Payload{}
 	}
@@ -78,6 +80,8 @@ func CommonPayload(i interface{}) *Payload {
 	case *CertificatePKCS1Payload:
 		return &pl.Payload
 	case *SCEPPayload:
+		return &pl.Payload
+	case *ACMECertificatePayload:
 		return &pl.Payload
 	case *MDMPayload:
 		return &pl.Payload
@@ -159,6 +163,41 @@ func NewSCEPPayload(i string) *SCEPPayload {
 func (p *Profile) SCEPPayloads() (plds []*SCEPPayload) {
 	for _, pc := range p.PayloadContent {
 		if pld, ok := pc.Payload.(*SCEPPayload); ok {
+			plds = append(plds, pld)
+		}
+	}
+	return
+}
+
+// ACMECertificatePayload represents the "com.apple.security.acme" PayloadType.
+// See https://developer.apple.com/documentation/devicemanagement/acmecertificate
+type ACMECertificatePayload struct {
+	Payload
+	AllowAllAppsAccess bool         `plist:",omitempty"`
+	Attest             bool         `plist:",omitempty"`
+	ClientIdentifier   string       `plist:",omitempty"`
+	DirectoryURL       string       `plist:",omitempty"`
+	ExtendedKeyUsage   []string     `plist:",omitempty"`
+	HardwareBound      bool         `plist:",omitempty"`
+	KeySize            int          `plist:",omitempty"`
+	KeyIsExtractable   *bool        `plist:",omitempty"` // default true
+	KeyType            string       `plist:",omitempty"` // Possible values: RSA, ECSECPrimeRandom
+	Subject            [][][]string `plist:",omitempty"` // Example: [ [ ["C", "US"] ], [ ["O", "Apple Inc."] ], ..., [ [ "1.2.5.3", "bar" ] ] ]
+	UsageFlags         int          `plist:",omitempty"`
+	// TODO: SubjectAltName *SubjectAltName `plist:",omitempty"`
+}
+
+// NewACMECertificatePayload creates a new payload with identifier i
+func NewACMECertificatePayload(i string) *ACMECertificatePayload {
+	return &ACMECertificatePayload{
+		Payload: *NewPayload("com.apple.security.acme", i),
+	}
+}
+
+// ACMECertificatePayloads returns a slice of all payloads of that type
+func (p *Profile) ACMECertificatePayloads() (plds []*ACMECertificatePayload) {
+	for _, pc := range p.PayloadContent {
+		if pld, ok := pc.Payload.(*ACMECertificatePayload); ok {
 			plds = append(plds, pld)
 		}
 	}
