@@ -159,6 +159,10 @@ func TestACMECertificateProfileAndPayloadDecode(t *testing.T) {
 							},
 						},
 					},
+					SubjectAltName: &SubjectAltName{
+						DNSNames:    []string{"site.example.com"},
+						RFC822Names: []string{"alice@example.com", "bob@example.com"},
+					},
 					UsageFlags: 0,
 				},
 			},
