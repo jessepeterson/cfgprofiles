@@ -5,11 +5,10 @@ import (
 	"encoding/pem"
 	"io/ioutil"
 	"path/filepath"
+	"reflect"
 	"testing"
 
 	"github.com/groob/plist"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func GetCertData(t *testing.T) *x509.Certificate {
@@ -115,11 +114,11 @@ func TestProfileAndPayloadDecode(t *testing.T) {
 
 func TestACMECertificateProfileAndPayloadDecode(t *testing.T) {
 	plBytes, err := ioutil.ReadFile(filepath.Join("testdata", "acme-da.mobileconfig"))
-	require.NoError(t, err)
+	fatalIf(t, err)
 
 	p := &Profile{}
 	err = plist.Unmarshal(plBytes, p)
-	require.NoError(t, err)
+	fatalIf(t, err)
 
 	expected := &Profile{
 		Payload: Payload{
@@ -166,5 +165,13 @@ func TestACMECertificateProfileAndPayloadDecode(t *testing.T) {
 		},
 	}
 
-	assert.Equal(t, expected, p)
+	if !reflect.DeepEqual(expected, p) {
+		t.Errorf("have %#+v, want %#+v", p, expected)
+	}
+}
+
+func fatalIf(t *testing.T, err error) {
+	if err != nil {
+		t.Fatal(err)
+	}
 }
