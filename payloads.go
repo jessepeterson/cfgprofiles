@@ -169,6 +169,8 @@ func (p *Profile) SCEPPayloads() (plds []*SCEPPayload) {
 	return
 }
 
+// ACMECertificatePayload represents the "com.apple.security.acme" PayloadType.
+// See https://developer.apple.com/documentation/devicemanagement/acmecertificate
 type ACMECertificatePayload struct {
 	Payload
 	AllowAllAppsAccess bool         `plist:",omitempty"`
