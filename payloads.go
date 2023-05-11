@@ -180,9 +180,9 @@ type ACMECertificatePayload struct {
 	KeySize            int          `plist:",omitempty"`
 	KeyIsExtractable   *bool        `plist:",omitempty"` // default true
 	KeyType            string       `plist:",omitempty"` // Possible values: RSA, ECSECPrimeRandom
-	Subject            [][][]string `plist:",omitempty"` // e.g. [ [ [”C”, “US”] ], [ [”O”, “Apple Inc.”] ], ..., [ [ “1.2.5.3”, “bar” ] ] ]
+	Subject            [][][]string `plist:",omitempty"` // Example: [ [ ["C", "US"] ], [ ["O", "Apple Inc."] ], ..., [ [ "1.2.5.3", "bar" ] ] ]
 	UsageFlags         int          `plist:",omitempty"`
-	//SubjectAltname  []string // TODO
+	// TODO: SubjectAltName *SubjectAltName `plist:",omitempty"`
 }
 
 // NewACMECertificatePayload creates a new payload with identifier i
