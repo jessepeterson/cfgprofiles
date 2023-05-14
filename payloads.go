@@ -1,9 +1,13 @@
 package cfgprofiles
 
 import (
+	"errors"
+	"fmt"
+	"reflect"
 	"strings"
 
 	"github.com/google/uuid"
+	"github.com/groob/plist"
 )
 
 // payloadWrapper is a wrapper around a profile payload struct.
@@ -131,18 +135,18 @@ func (p *Profile) CertificatePKCS1Payloads() (plds []*CertificatePKCS1Payload) {
 // See https://developer.apple.com/documentation/devicemanagement/scep/payloadcontent
 type SCEPPayloadContent struct {
 	URL                string
-	Name               string       `plist:",omitempty"`
-	Subject            [][][]string `plist:",omitempty"`
-	Challenge          string       `plist:",omitempty"`
-	KeySize            int          `plist:"Keysize,omitempty"`
-	KeyType            string       `plist:"Key Type,omitempty"`
-	KeyUsage           int          `plist:"Key Usage,omitempty"`
-	Retries            int          `plist:",omitempty"`
-	RetryDelay         int          `plist:",omitempty"`
-	CAFingerprint      []byte       `plist:",omitempty"`
-	AllowAllAppsAccess bool         `plist:",omitempty"`
-	KeyIsExtractable   *bool        `plist:",omitempty"` // default true
-	// TODO: SubjectAltName *SubjectAltName `plist:",omitempty"`
+	Name               string          `plist:",omitempty"`
+	Subject            [][][]string    `plist:",omitempty"`
+	Challenge          string          `plist:",omitempty"`
+	KeySize            int             `plist:"Keysize,omitempty"`
+	KeyType            string          `plist:"Key Type,omitempty"`
+	KeyUsage           int             `plist:"Key Usage,omitempty"`
+	Retries            int             `plist:",omitempty"`
+	RetryDelay         int             `plist:",omitempty"`
+	CAFingerprint      []byte          `plist:",omitempty"`
+	AllowAllAppsAccess bool            `plist:",omitempty"`
+	KeyIsExtractable   *bool           `plist:",omitempty"` // default true
+	SubjectAltName     *SubjectAltName `plist:",omitempty"`
 }
 
 // SCEPPayload represents the "com.apple.security.scep" PayloadType.
@@ -169,22 +173,99 @@ func (p *Profile) SCEPPayloads() (plds []*SCEPPayload) {
 	return
 }
 
+// SubjectAltName contains the Subject Alternative Name details.
+// See https://developer.apple.com/documentation/devicemanagement/acmecertificate/subjectaltname
+//
+// For SCEP, this is mentioned about the number of entries:
+// You can specify a single string or an array of strings for each key.
+// The values you specify depend on the CA you're using but might
+// include DNS name, URL, or email values. The assumption is the
+// same is true for ACME.
+//
+// Single key/string example:
+//
+// <key>SubjectAltName</key>
+// <dict>
+// <key>dNSName</key>
+// <string>site.example.com</string>
+// </dict>
+//
+// Example for key with multiple strings:
+//
+// <dict>
+// <key>dNSName</key>
+// <string>site.example.com</string>
+// <key>rfc822Name</key>
+// <array>
+// <string>alice@example.com</string>
+// <string>bob@example.com</string>
+// </array>
+// </dict>
+type SubjectAltName struct {
+	DNSNames     multiString `plist:"dNSName,omitempty"`
+	NTPrincipals multiString `plist:"ntPrincipalName,omitempty"`
+	RFC822Names  multiString `plist:"rfc822Name,omitempty"`
+	URIs         multiString `plist:"uniformResourceIdentifier,omitempty"`
+}
+
+type multiString []string
+
+// UnmarshalPlist unmarshals the contents of a [multiString], which can
+// be either a single value or an array of strings.
+func (m *multiString) UnmarshalPlist(f func(interface{}) error) error {
+	var trySingle string
+	err := f(&trySingle)
+	if err == nil {
+		*m = []string{trySingle}
+		return nil
+	}
+
+	var tryMulti []string
+	err = f(&tryMulti)
+	if err == nil {
+		*m = tryMulti
+		return nil
+	}
+
+	var umterr plist.UnmarshalTypeError
+	if errors.As(err, &umterr) {
+		umterr.Type = reflect.TypeOf(*m) // override type to cfgprofiles.multiString
+		return umterr
+	}
+
+	// fallback error; this is the most information we can provide
+	return fmt.Errorf("cannot unmarshal value into %T: %w", *m, err)
+}
+
+// MarshalPlist marshals the contents of a [multiString], which can
+// be either a single value or slice of strings.
+func (m *multiString) MarshalPlist() (interface{}, error) {
+	switch n := *m; len(n) {
+	case 0:
+		return nil, fmt.Errorf("cannot marshal empty %T", n)
+	case 1:
+		return n[0], nil
+	default:
+		return append([]string{}, n...), nil
+	}
+}
+
 // ACMECertificatePayload represents the "com.apple.security.acme" PayloadType.
 // See https://developer.apple.com/documentation/devicemanagement/acmecertificate
 type ACMECertificatePayload struct {
 	Payload
-	AllowAllAppsAccess bool         `plist:",omitempty"`
-	Attest             bool         `plist:",omitempty"`
-	ClientIdentifier   string       `plist:",omitempty"`
-	DirectoryURL       string       `plist:",omitempty"`
-	ExtendedKeyUsage   []string     `plist:",omitempty"`
-	HardwareBound      bool         `plist:",omitempty"`
-	KeySize            int          `plist:",omitempty"`
-	KeyIsExtractable   *bool        `plist:",omitempty"` // default true
-	KeyType            string       `plist:",omitempty"` // Possible values: RSA, ECSECPrimeRandom
-	Subject            [][][]string `plist:",omitempty"` // Example: [ [ ["C", "US"] ], [ ["O", "Apple Inc."] ], ..., [ [ "1.2.5.3", "bar" ] ] ]
-	UsageFlags         int          `plist:",omitempty"`
-	// TODO: SubjectAltName *SubjectAltName `plist:",omitempty"`
+	AllowAllAppsAccess bool            `plist:",omitempty"`
+	Attest             bool            `plist:",omitempty"`
+	ClientIdentifier   string          `plist:",omitempty"`
+	DirectoryURL       string          `plist:",omitempty"`
+	ExtendedKeyUsage   []string        `plist:",omitempty"`
+	HardwareBound      bool            `plist:",omitempty"`
+	KeySize            int             `plist:",omitempty"`
+	KeyIsExtractable   *bool           `plist:",omitempty"` // default true
+	KeyType            string          `plist:",omitempty"` // Possible values: RSA, ECSECPrimeRandom
+	Subject            [][][]string    `plist:",omitempty"` // Example: [ [ ["C", "US"] ], [ ["O", "Apple Inc."] ], ..., [ [ "1.2.5.3", "bar" ] ] ]
+	UsageFlags         int             `plist:",omitempty"`
+	SubjectAltName     *SubjectAltName `plist:",omitempty"`
 }
 
 // NewACMECertificatePayload creates a new payload with identifier i
