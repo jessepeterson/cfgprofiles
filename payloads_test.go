@@ -25,6 +25,22 @@ func Test_multiString_UnmarshalPlist_error(t *testing.T) {
 	}
 }
 
+func Test_multipleNTPrincipalNames_UnmarshalPlist_error(t *testing.T) {
+	plBytes, err := ioutil.ReadFile(filepath.Join("testdata", "multiple-nt-principals-error.mobileconfig"))
+	fatalIf(t, err)
+
+	p := &Profile{}
+	err = plist.Unmarshal(plBytes, p)
+	if err == nil {
+		t.Error("expected an error")
+	}
+
+	expectedErrorMessage := "plist: cannot unmarshal array into Go value of type string"
+	if err.Error() != expectedErrorMessage {
+		t.Errorf("have %q, want %q", err.Error(), expectedErrorMessage)
+	}
+}
+
 func Test_multiString_MarshalPlist(t *testing.T) {
 	tests := []struct {
 		name    string

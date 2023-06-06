@@ -177,10 +177,11 @@ func (p *Profile) SCEPPayloads() (plds []*SCEPPayload) {
 // See https://developer.apple.com/documentation/devicemanagement/acmecertificate/subjectaltname
 //
 // For SCEP, this is mentioned about the number of entries:
-// You can specify a single string or an array of strings for each key.
-// The values you specify depend on the CA you're using but might
-// include DNS name, URL, or email values. The assumption is the
-// same is true for ACME.
+// You can specify a single string or an array of strings
+// for each key, except for the ntPrincipalName, which can only
+// be a single string. The values you specify depend on the
+// CA you're using but might include DNS name, URL, or email
+// values. The assumption is the same is true for ACME.
 //
 // Single key/string example:
 //
@@ -202,10 +203,10 @@ func (p *Profile) SCEPPayloads() (plds []*SCEPPayload) {
 // </array>
 // </dict>
 type SubjectAltName struct {
-	DNSNames     multiString `plist:"dNSName,omitempty"`
-	NTPrincipals multiString `plist:"ntPrincipalName,omitempty"`
-	RFC822Names  multiString `plist:"rfc822Name,omitempty"`
-	URIs         multiString `plist:"uniformResourceIdentifier,omitempty"`
+	DNSNames    multiString `plist:"dNSName,omitempty"`
+	NTPrincipal string      `plist:"ntPrincipalName,omitempty"`
+	RFC822Names multiString `plist:"rfc822Name,omitempty"`
+	URIs        multiString `plist:"uniformResourceIdentifier,omitempty"`
 }
 
 type multiString []string
