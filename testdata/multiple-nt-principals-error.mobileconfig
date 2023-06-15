@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>PayloadContent</key>
+		<array>
+			<dict>
+				<key>PayloadIdentifier</key>
+				<string>com.apple.security.acme.cbdc6238-feec-4171-8784-98e576bbb814</string>
+				<key>PayloadType</key>
+				<string>com.apple.security.acme</string>
+				<key>PayloadUUID</key>
+				<string>cbdc6238-feec-4171-8784-98e576bbb814</string>
+				<key>PayloadVersion</key>
+				<integer>1</integer>
+				<key>SubjectAltName</key>
+				<dict>
+					<key>ntPrincipalName</key>
+					<array>
+						<string>principal1</string>
+						<string>principal12</string>
+					</array>
+				</dict>
+				<key>Subject</key>
+			</dict>
+		</array>
+		<key>PayloadDisplayName</key>
+		<string>ACME DA Certificate</string>
+		<key>PayloadIdentifier</key>
+		<string>com.smallstep.acmedademo</string>
+		<key>PayloadType</key>
+		<string>Configuration</string>
+		<key>PayloadUUID</key>
+		<string>734EEACF-1334-4B65-8E8C-6AC07E9B79E5</string>
+		<key>PayloadVersion</key>
+		<integer>1</integer>
+	</dict>
+</plist>
