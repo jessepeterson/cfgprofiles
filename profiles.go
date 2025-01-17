@@ -1,5 +1,5 @@
 // Package cfgprofiles provides structs and helpers for working with Apple Configuration Profiles in go.
-// Note that marshaling and unmarshaling are dependent on the https://github.com/groob/plist package.
+// Note that marshaling and unmarshaling are dependent on the https://github.com/micromdm/plist package.
 package cfgprofiles
 
 import (

@@ -4,7 +4,7 @@ Package `cfgprofiles` provides structs and helpers for working with Apple Config
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/jessepeterson/cfgprofiles.svg)](https://pkg.go.dev/github.com/jessepeterson/cfgprofiles)
 
-*Note:* marshaling and unmarshaling are dependent on the https://github.com/groob/plist package.
+*Note:* marshaling and unmarshaling are dependent on the https://github.com/micromdm/plist package.
 
 Example unmarshaling (parsing):
 
