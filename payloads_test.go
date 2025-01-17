@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/groob/plist"
+	"github.com/micromdm/plist"
 )
 
 func Test_multiString_UnmarshalPlist_error(t *testing.T) {

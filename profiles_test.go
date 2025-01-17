@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/groob/plist"
+	"github.com/micromdm/plist"
 )
 
 func GetCertData(t *testing.T) *x509.Certificate {
